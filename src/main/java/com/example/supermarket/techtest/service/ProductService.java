@@ -22,6 +22,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public ProductDTO getProduct(Long id) {
+        Product productFound = productRepository.findById(id)
+                .orElseThrow( () -> new NotFoundException("Product not Found"));
+
+        return Mapper.toDTO(productFound);
+    }
+
+    @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
         Product product = Product.builder()
                 .name(productDTO.getName())
@@ -36,12 +44,12 @@ public class ProductService implements IProductService {
     @Override
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product product = productRepository.findById(id)
-                .orElseThrow( () -> new NotFoundException("Product not found"));
+                .orElseThrow( () -> new NotFoundException("Product not Found"));
 
-        product.setName(product.getName());
-        product.setCategory(product.getCategory());
-        product.setPrice(product.getPrice());
-        product.setAmount(product.getAmount());
+        product.setName(productDTO.getName());
+        product.setCategory(productDTO.getCategory());
+        product.setPrice(productDTO.getPrice());
+        product.setAmount(productDTO.getAmount());
 
         return Mapper.toDTO(productRepository.save(product));
     }
@@ -49,7 +57,7 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProduct(Long id) {
         if(!productRepository.existsById(id)){
-            throw new NotFoundException("Product not found");
+            throw new NotFoundException("Product not Found");
         }
 
         productRepository.deleteById(id);

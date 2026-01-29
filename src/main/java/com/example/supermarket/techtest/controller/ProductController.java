@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,13 +32,19 @@ public class ProductController {
         );
     }
 
-//    @GetMapping("/product/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<ProductDTO> getProduct(){
-//        try {
-//            ResponseEntity.ok(productService)
-//        }
-//    }
+    @GetMapping("/product/{id}")
+    public ResponseEntity<ApiResponse<ProductDTO>> getProduct(@PathVariable Long id){
+
+        ProductDTO productFound = productService.getProduct(id);
+
+        ApiResponse<ProductDTO> response = new ApiResponse<>(
+                HttpStatus.FOUND.value(),
+                "Product found successfully",
+                productFound
+        );
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
 
     @PostMapping("/product")
     public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@Valid @RequestBody ProductDTO productDTO){
@@ -55,16 +62,30 @@ public class ProductController {
     }
 
     @PutMapping("/product/{id}")
-    @ResponseStatus(value = HttpStatus.OK, reason = "Product updated")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDTO productDTO){
-        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
+    public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDTO productDTO){
+
+        ProductDTO productUpdated = productService.updateProduct(id, productDTO);
+
+        ApiResponse<ProductDTO> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Product updated successfully",
+                productUpdated
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/product/{id}")
-    @ResponseStatus(value = HttpStatus.OK, reason = "Product deleted")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<?>> deleteProduct(@PathVariable Long id){
+
+        ApiResponse<?> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Product deleted successfully",
+                new ArrayList<String>()
+        );
+
             productService.deleteProduct(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
