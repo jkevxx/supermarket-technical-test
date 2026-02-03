@@ -1,5 +1,6 @@
 package com.example.supermarket.techtest.controller;
 
+import com.example.supermarket.techtest.dto.ApiResponse;
 import com.example.supermarket.techtest.dto.OfficeDTO;
 import com.example.supermarket.techtest.service.IOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,43 +19,72 @@ public class OfficeController {
     private IOfficeService officeService;
 
     @GetMapping("/offices")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<OfficeDTO>> getOffices(){
-        try {
-            return ResponseEntity.ok(officeService.getOffices());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<List<OfficeDTO>>> getOffices(){
+
+        List<OfficeDTO> offices = officeService.getOffices();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        HttpStatus.OK.value(),
+                        "Offices retrieved successfully",
+                        offices
+                )
+        );
+    }
+
+    @GetMapping("/office/{id}")
+    public ResponseEntity<ApiResponse<OfficeDTO>> getOffice(@PathVariable Long id){
+
+        OfficeDTO officeFound = officeService.getOffice(id);
+
+        ApiResponse<OfficeDTO> response = new ApiResponse<>(
+                HttpStatus.FOUND.value(),
+                "Office found successfully",
+                officeFound
+        );
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
 
     @PostMapping("/office")
-    @ResponseStatus(value = HttpStatus.CREATED, reason = "Office created")
-    public ResponseEntity<OfficeDTO> createOffice(@RequestBody OfficeDTO officeDTO){
-        try {
-            return ResponseEntity.ok(officeService.createOffice(officeDTO));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<OfficeDTO>> createOffice(@RequestBody OfficeDTO officeDTO){
+
+        OfficeDTO officeCreated = officeService.createOffice(officeDTO);
+
+        ApiResponse<OfficeDTO> response = new ApiResponse<>(
+                HttpStatus.CREATED.value(),
+                "Office Created",
+                officeCreated
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/office/{id}")
-    @ResponseStatus(value = HttpStatus.OK, reason = "Office updated")
-    public ResponseEntity<OfficeDTO> updateOffice(@PathVariable Long id, @RequestBody OfficeDTO officeDTO){
-        try {
-            return ResponseEntity.ok(officeService.updateOffice(id, officeDTO));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<OfficeDTO>> updateOffice(@PathVariable Long id, @RequestBody OfficeDTO officeDTO){
+
+        OfficeDTO officeUpdated = officeService.updateOffice(id, officeDTO);
+
+        ApiResponse<OfficeDTO> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Office Updated",
+                officeUpdated
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/office/{id}")
-    @ResponseStatus(value = HttpStatus.OK, reason = "Product deleted")
-    public ResponseEntity<OfficeDTO> deleteOffice(@PathVariable Long id){
-        try {
-            officeService.deleteOffice(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<?>> deleteOffice(@PathVariable Long id){
+
+        ApiResponse<?> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Office Deleted",
+                new ArrayList<String>()
+        );
+
+        officeService.deleteOffice(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
     }
 }

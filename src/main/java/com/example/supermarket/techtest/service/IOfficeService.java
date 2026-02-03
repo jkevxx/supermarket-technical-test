@@ -7,6 +7,7 @@ import java.util.List;
 public interface IOfficeService {
 
     List<OfficeDTO> getOffices();
+    OfficeDTO getOffice(Long id);
     OfficeDTO createOffice(OfficeDTO officeDTO);
     OfficeDTO updateOffice(Long id, OfficeDTO officeDTO);
     void deleteOffice(Long id);

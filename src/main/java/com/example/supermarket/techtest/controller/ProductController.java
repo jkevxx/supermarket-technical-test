@@ -49,12 +49,12 @@ public class ProductController {
     @PostMapping("/product")
     public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@Valid @RequestBody ProductDTO productDTO){
 
-        ProductDTO createdProduct = productService.createProduct(productDTO);
+        ProductDTO productCreated = productService.createProduct(productDTO);
 
         ApiResponse<ProductDTO> response = new ApiResponse<>(
                 HttpStatus.CREATED.value(),
                 "Product created successfully",
-                createdProduct
+                productCreated
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
