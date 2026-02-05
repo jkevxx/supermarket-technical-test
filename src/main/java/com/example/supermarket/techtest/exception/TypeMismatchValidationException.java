@@ -1,8 +1,11 @@
 package com.example.supermarket.techtest.exception;
 
 
+import lombok.Getter;
+
 import java.util.Map;
 
+@Getter
 public class TypeMismatchValidationException extends RuntimeException {
     private final Map<String, String> errors;
 
@@ -11,7 +14,4 @@ public class TypeMismatchValidationException extends RuntimeException {
         this.errors = errors;
     }
 
-    public Map<String, String> getErrors() {
-        return errors;
-    }
 }

@@ -3,6 +3,7 @@ package com.example.supermarket.techtest.controller;
 import com.example.supermarket.techtest.dto.ApiResponse;
 import com.example.supermarket.techtest.dto.OfficeDTO;
 import com.example.supermarket.techtest.service.IOfficeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class OfficeController {
     }
 
     @PostMapping("/office")
-    public ResponseEntity<ApiResponse<OfficeDTO>> createOffice(@RequestBody OfficeDTO officeDTO){
+    public ResponseEntity<ApiResponse<OfficeDTO>> createOffice(@Valid @RequestBody OfficeDTO officeDTO){
 
         OfficeDTO officeCreated = officeService.createOffice(officeDTO);
 
@@ -61,7 +62,7 @@ public class OfficeController {
     }
 
     @PutMapping("/office/{id}")
-    public ResponseEntity<ApiResponse<OfficeDTO>> updateOffice(@PathVariable Long id, @RequestBody OfficeDTO officeDTO){
+    public ResponseEntity<ApiResponse<OfficeDTO>> updateOffice(@PathVariable Long id, @Valid @RequestBody OfficeDTO officeDTO){
 
         OfficeDTO officeUpdated = officeService.updateOffice(id, officeDTO);
 
