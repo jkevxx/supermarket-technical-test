@@ -1,5 +1,7 @@
 package com.example.supermarket.techtest.dto;
 
+import com.example.supermarket.techtest.config.deserializer.UniversalTypeDeserializer;
+import com.example.supermarket.techtest.dto.deserializer.ProductDTODeserializerModulated;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +14,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonDeserialize(using = ProductDTODeserializer.class)
+//@JsonDeserialize(using = ProductDTODeserializer.class)
+@JsonDeserialize(using = ProductDTODeserializerModulated.class)
+//@JsonDeserialize(using = UniversalTypeDeserializer.class)
 public class ProductDTO {
     private Long id;
 

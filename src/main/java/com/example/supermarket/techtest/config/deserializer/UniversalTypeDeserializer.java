@@ -11,7 +11,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-// ask why do I need to implement T in my UniversalTypeDeserializer
 public class UniversalTypeDeserializer extends JsonDeserializer<Object> implements ContextualDeserializer {
 
     private Class<?> targetClass;
