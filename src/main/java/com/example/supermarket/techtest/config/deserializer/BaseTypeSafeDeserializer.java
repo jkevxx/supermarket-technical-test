@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @param <T> The DTO type to deserialize
  */
-public abstract class BaseTypeSafeDeserializer <T> extends JsonDeserializer<T> {
+public abstract class BaseTypeSafeDeserializer<T> extends JsonDeserializer<T> {
 
 
     @Override
@@ -56,10 +56,13 @@ public abstract class BaseTypeSafeDeserializer <T> extends JsonDeserializer<T> {
             if (node.get(fieldName).isTextual()) {
                 return node.get(fieldName).asText();
             } else if (!node.get(fieldName).isNull()) {
-                errors.put(fieldName, fieldName + " must be a valid String");
+                errors.put(fieldName, fieldName + " must be a valid string");
             }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
         }
-        return errors.put(fieldName, "The " + fieldName + " is required");
+
+        return null;
     }
 
     protected Integer validateInteger(JsonNode node, String fieldName, Map<String, String> errors) {
@@ -67,8 +70,10 @@ public abstract class BaseTypeSafeDeserializer <T> extends JsonDeserializer<T> {
             if (node.get(fieldName).isInt()) {
                 return node.get(fieldName).asInt();
             } else if (!node.get(fieldName).isNull()) {
-                errors.put(fieldName, fieldName + " must be a valid Integer");
+                errors.put(fieldName, fieldName + " must be a valid integer");
             }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
         }
         return null;
     }
@@ -79,8 +84,10 @@ public abstract class BaseTypeSafeDeserializer <T> extends JsonDeserializer<T> {
             if (fieldNode.isLong() || fieldNode.isInt()) {
                 return fieldNode.asLong();
             } else if (!fieldNode.isNull()) {
-                errors.put(fieldName, fieldName + " must be a valid Long");
+                errors.put(fieldName, fieldName + " must be a valid long");
             }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
         }
         return null;
     }
@@ -90,8 +97,10 @@ public abstract class BaseTypeSafeDeserializer <T> extends JsonDeserializer<T> {
             if (node.get(fieldName).isNumber()) {
                 return node.get(fieldName).asDouble();
             } else if (!node.get(fieldName).isNull()) {
-                errors.put(fieldName, fieldName + " must be a valid Double");
+                errors.put(fieldName, fieldName + " must be a valid double");
             }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
         }
         return null;
     }
@@ -101,8 +110,10 @@ public abstract class BaseTypeSafeDeserializer <T> extends JsonDeserializer<T> {
             if (node.get(fieldName).isNumber()) {
                 return node.get(fieldName).floatValue();
             } else if (!node.get(fieldName).isNull()) {
-                errors.put(fieldName, fieldName + " must be a valid Float");
+                errors.put(fieldName, fieldName + " must be a valid float");
             }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
         }
         return null;
     }
@@ -112,8 +123,10 @@ public abstract class BaseTypeSafeDeserializer <T> extends JsonDeserializer<T> {
             if (node.get(fieldName).isBoolean()) {
                 return node.get(fieldName).asBoolean();
             } else if (!node.get(fieldName).isNull()) {
-                errors.put(fieldName, fieldName + " must be a valid Boolean");
+                errors.put(fieldName, fieldName + " must be a valid boolean");
             }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
         }
         return null;
     }

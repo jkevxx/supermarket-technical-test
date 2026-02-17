@@ -25,7 +25,7 @@ public class OfficeService implements IOfficeService{
     public OfficeDTO getOffice(Long id) {
 
         Office officeFound = officeRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("Office Found"));
+                .orElseThrow(()-> new NotFoundException("office found"));
 
         return Mapper.toDTO(officeFound);
     }
@@ -44,7 +44,7 @@ public class OfficeService implements IOfficeService{
     @Override
     public OfficeDTO updateOffice(Long id, OfficeDTO officeDTO) {
         Office office = officeRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("Office not found"));
+                .orElseThrow(()-> new NotFoundException("office not found"));
 
         office.setName(officeDTO.getName());
         office.setDirection(officeDTO.getDirection());
@@ -55,7 +55,7 @@ public class OfficeService implements IOfficeService{
     @Override
     public void deleteOffice(Long id) {
         if(!officeRepository.existsById(id)){
-            throw new NotFoundException("Office not found");
+            throw new NotFoundException("office not found");
         }
 
         officeRepository.deleteById(id);

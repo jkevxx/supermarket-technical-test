@@ -39,15 +39,15 @@ public class SaleService implements ISaleService {
 
         // validations
         if (saleDTO == null) throw new RuntimeException("SaleDTO is null");
-        if (saleDTO.getIdOffice() == null) throw new RuntimeException("The office is missing");
+        if (saleDTO.getIdOffice() == null) throw new RuntimeException("the office is missing");
         if (saleDTO.getDetails() == null || saleDTO.getDetails().isEmpty())
-            throw new RuntimeException("It must have one product");
+            throw new RuntimeException("it must have one product");
 
         // Searching office
         Office office = officeRepository.findById(saleDTO.getIdOffice()).orElse(null);
 
         if (office == null)
-            throw new NotFoundException("Office not found");
+            throw new NotFoundException("office not found");
 
         // creating sale
         Sale sale = new Sale();
@@ -63,7 +63,7 @@ public class SaleService implements ISaleService {
 
         for (SalesDetailDTO salesDetailDTO : saleDTO.getDetails()) {
             Product product = productRepository.findByName(salesDetailDTO.getProductName()).orElse(null);
-            if (product == null) throw new RuntimeException("Product not found " + salesDetailDTO.getProductName());
+            if (product == null) throw new RuntimeException("product not found " + salesDetailDTO.getProductName());
 
             SalesDetail salesDetail = new SalesDetail();
             salesDetail.setSale(sale);
@@ -82,7 +82,7 @@ public class SaleService implements ISaleService {
     @Override
     public SaleDTO updateSale(Long id, SaleDTO saleDTO) {
         Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sale not found"));
+                .orElseThrow(() -> new NotFoundException("sale not found"));
 
         sale.setDate(saleDTO.getDate());
         sale.setStatus(saleDTO.getStatus());
@@ -99,7 +99,7 @@ public class SaleService implements ISaleService {
     @Override
     public void deleteSale(Long id) {
         if (!saleRepository.existsById(id)) {
-            throw new NotFoundException("Sale not found");
+            throw new NotFoundException("sale not found");
         }
 
         saleRepository.deleteById(id);

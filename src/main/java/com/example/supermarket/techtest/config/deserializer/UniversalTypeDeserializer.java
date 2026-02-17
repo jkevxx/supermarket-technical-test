@@ -11,6 +11,12 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * This a second alternative of implementing a custom validation
+ *
+ * */
+
 public class UniversalTypeDeserializer extends JsonDeserializer<Object> implements ContextualDeserializer {
 
     private Class<?> targetClass;

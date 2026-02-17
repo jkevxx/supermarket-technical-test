@@ -1,5 +1,6 @@
-package com.example.supermarket.techtest.dto;
+package com.example.supermarket.techtest.dto.deserializer;
 
+import com.example.supermarket.techtest.dto.ProductDTO;
 import com.example.supermarket.techtest.exception.TypeMismatchValidationException;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
