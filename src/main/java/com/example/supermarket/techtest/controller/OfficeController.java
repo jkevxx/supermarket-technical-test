@@ -78,14 +78,14 @@ public class OfficeController {
     @DeleteMapping("/office/{id}")
     public ResponseEntity<ApiResponse<?>> deleteOffice(@PathVariable Long id){
 
+        officeService.deleteOffice(id);
+
         ApiResponse<?> response = new ApiResponse<>(
                 HttpStatus.OK.value(),
                 "Office Deleted",
                 new ArrayList<String>()
         );
 
-        officeService.deleteOffice(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
-
     }
 }

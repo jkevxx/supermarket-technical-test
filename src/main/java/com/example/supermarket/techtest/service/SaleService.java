@@ -35,6 +35,14 @@ public class SaleService implements ISaleService {
     }
 
     @Override
+    public SaleDTO getSale(Long id) {
+        Sale saleFound = saleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("sale not found"));
+
+        return Mapper.toDTO(saleFound);
+    }
+
+    @Override
     public SaleDTO createSale(SaleDTO saleDTO) {
 
         // validations

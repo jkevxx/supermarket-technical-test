@@ -1,13 +1,15 @@
 package com.example.supermarket.techtest.controller;
 
+import com.example.supermarket.techtest.dto.ApiResponse;
 import com.example.supermarket.techtest.dto.SaleDTO;
 import com.example.supermarket.techtest.service.ISaleService;
-import com.example.supermarket.techtest.service.SaleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,44 +20,71 @@ public class SaleController {
     private ISaleService saleService;
 
     @GetMapping("/sales")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<SaleDTO>> getSales(){
-        try {
-            return ResponseEntity.ok(saleService.getSales());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<List<SaleDTO>>> getSales(){
+        List<SaleDTO> sales = saleService.getSales();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        HttpStatus.OK.value(),
+                        "Sales retrieved successfully",
+                        sales
+                )
+        );
+    }
+
+    @GetMapping("/sale/{id}")
+    public ResponseEntity<ApiResponse<SaleDTO>> getSale(@PathVariable Long id){
+        SaleDTO saleFound = saleService.getSale(id);
+
+        ApiResponse<SaleDTO> response = new ApiResponse<>(
+                HttpStatus.FOUND.value(),
+                "Sale found successfully",
+                saleFound
+        );
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
 
     @PostMapping("/sale")
-    @ResponseStatus(value = HttpStatus.OK, reason = "Sale created")
-    public ResponseEntity<SaleDTO> createSale(@RequestBody SaleDTO saleDTO){
-        try {
-            return ResponseEntity.ok(saleService.createSale(saleDTO));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<SaleDTO>> createSale(@Valid @RequestBody SaleDTO saleDTO){
+
+        SaleDTO saleCreated = saleService.createSale(saleDTO);
+
+        ApiResponse<SaleDTO> response = new ApiResponse<>(
+                HttpStatus.CREATED.value(),
+                "Sale created successfully",
+                saleCreated
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/sale/{id}")
-    @ResponseStatus(value = HttpStatus.OK, reason = "Sale Updated")
-    public ResponseEntity<SaleDTO> updateSale(@PathVariable Long id, @RequestBody SaleDTO saleDTO){
-        try {
-            return ResponseEntity.ok(saleService.updateSale(id, saleDTO));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<SaleDTO>> updateSale(@PathVariable Long id, @Valid @RequestBody SaleDTO saleDTO){
+
+        SaleDTO saleUpdated = saleService.updateSale(id, saleDTO);
+
+        ApiResponse<SaleDTO> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Sale updated successfully",
+                saleUpdated
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/sale/{id}")
-    @ResponseStatus(value = HttpStatus.OK, reason = "Sale Deleted")
-    public ResponseEntity<SaleDTO> deleteSale(@PathVariable Long id){
-        try {
-            saleService.deleteSale(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<?>> deleteSale(@PathVariable Long id){
+
+        saleService.deleteSale(id);
+
+        ApiResponse<?> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Sale deleted successfully",
+                new ArrayList<String>()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

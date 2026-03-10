@@ -1,5 +1,7 @@
 package com.example.supermarket.techtest.dto;
 
+import com.example.supermarket.techtest.dto.deserializer.SaleDTODeserializerModulated;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -10,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonDeserialize(using = SaleDTODeserializerModulated.class)
 public class SaleDTO {
 
     // sale data

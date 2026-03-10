@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -124,6 +127,29 @@ public abstract class BaseTypeSafeDeserializer<T> extends JsonDeserializer<T> {
                 return node.get(fieldName).asBoolean();
             } else if (!node.get(fieldName).isNull()) {
                 errors.put(fieldName, fieldName + " must be a valid boolean");
+            }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
+        }
+        return null;
+    }
+
+    // LocalDate validation (ISO format: yyyy-MM-dd)
+    protected LocalDate validateLocalDate(JsonNode node, String fieldName, Map<String, String> errors) {
+        return validateLocalDate(node, fieldName, errors, DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    // LocalDate validation with custom format
+    protected LocalDate validateLocalDate(JsonNode node, String fieldName, Map<String, String> errors, DateTimeFormatter formatter) {
+        if (node.has(fieldName)) {
+            if (node.get(fieldName).isTextual()) {
+                try {
+                    return LocalDate.parse(node.get(fieldName).asText(), formatter);
+                } catch (DateTimeParseException e) {
+                    errors.put(fieldName, fieldName + " must be a valid date in format " + formatter);
+                }
+            } else if (!node.get(fieldName).isNull()) {
+                errors.put(fieldName, fieldName + " must be a valid date string");
             }
         } else {
             errors.put(fieldName, fieldName + " is required");
