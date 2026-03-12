@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +33,7 @@ public abstract class BaseTypeSafeDeserializer<T> extends JsonDeserializer<T> {
 
         Map<String, String> errors = new HashMap<>();
 
-        deserializeFields(node, dto, errors);
+        deserializeFields(node, dto, errors, ctxt);
 
         if (!errors.isEmpty()) {
             throw new TypeMismatchValidationException(errors);
@@ -42,7 +44,6 @@ public abstract class BaseTypeSafeDeserializer<T> extends JsonDeserializer<T> {
 
     /**
      * Creates a new instance of the DTO.
-     * Subclasses must implement this method.
      */
     protected abstract T createInstance();
 
@@ -50,9 +51,45 @@ public abstract class BaseTypeSafeDeserializer<T> extends JsonDeserializer<T> {
      * Deserializes individual fields from the JSON node into the DTO.
      * Subclasses should use the helper methods to validate and set fields.
      */
-    protected abstract void deserializeFields(JsonNode node, T dto, Map<String, String> errors);
+    protected abstract void deserializeFields(JsonNode node, T dto, Map<String, String> errors, DeserializationContext ctxt);
 
     // Helper methods for common type validations
+
+    protected <E> List<E> validateList(JsonNode node, String fieldName, Class<E> elementType, Map<String, String> errors, DeserializationContext ctxt) {
+        if (node.has(fieldName)) {
+            JsonNode listNode = node.get(fieldName);
+            if (listNode.isArray()) {
+                List<E> list = new ArrayList<>();
+                for (int i = 0; i < listNode.size(); i++) {
+                    try {
+                        JsonNode itemNode = listNode.get(i);
+                        // Use traverse to create a parser for the sub-node
+                        JsonParser p = itemNode.traverse(ctxt.getParser().getCodec());
+                        if (p.getCurrentToken() == null) {
+                            p.nextToken();
+                        }
+                        E item = ctxt.readValue(p, elementType);
+                        list.add(item);
+                    } catch (Exception e) {
+                        // Capture nested validation errors if they are TypeMismatchValidationException
+                        if (e.getCause() instanceof TypeMismatchValidationException nestedEx) {
+                            int finalI = i;
+                            nestedEx.getErrors().forEach((key, value) ->
+                                errors.put(fieldName + "[" + finalI + "]." + key, value));
+                        } else {
+                            errors.put(fieldName + "[" + i + "]", "Invalid " + elementType.getSimpleName() + " structure");
+                        }
+                    }
+                }
+                return list;
+            } else if (!listNode.isNull()) {
+                errors.put(fieldName, fieldName + " must be a valid array");
+            }
+        } else {
+            errors.put(fieldName, fieldName + " is required");
+        }
+        return null;
+    }
 
     protected String validateString(JsonNode node, String fieldName, Map<String, String> errors) {
         if (node.has(fieldName)) {
