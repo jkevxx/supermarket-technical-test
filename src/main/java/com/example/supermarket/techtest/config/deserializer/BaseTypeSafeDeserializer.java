@@ -72,7 +72,8 @@ public abstract class BaseTypeSafeDeserializer<T> extends JsonDeserializer<T> {
                         list.add(item);
                     } catch (Exception e) {
                         // Capture nested validation errors if they are TypeMismatchValidationException
-                        if (e.getCause() instanceof TypeMismatchValidationException nestedEx) {
+                        TypeMismatchValidationException nestedEx = findTypeMismatchException(e);
+                        if (nestedEx != null) {
                             int finalI = i;
                             nestedEx.getErrors().forEach((key, value) ->
                                 errors.put(fieldName + "[" + finalI + "]." + key, value));
@@ -89,6 +90,16 @@ public abstract class BaseTypeSafeDeserializer<T> extends JsonDeserializer<T> {
             errors.put(fieldName, fieldName + " is required");
         }
         return null;
+    }
+
+    private TypeMismatchValidationException findTypeMismatchException(Throwable e) {
+        if (e == null) {
+            return null;
+        }
+        if (e instanceof TypeMismatchValidationException) {
+            return (TypeMismatchValidationException) e;
+        }
+        return findTypeMismatchException(e.getCause());
     }
 
     protected String validateString(JsonNode node, String fieldName, Map<String, String> errors) {
