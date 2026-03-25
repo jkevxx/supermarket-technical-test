@@ -26,6 +26,6 @@ public class Sale {
     @ManyToOne
     private Office office; // this is the foreign key
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SalesDetail> detail = new ArrayList<>();
 }

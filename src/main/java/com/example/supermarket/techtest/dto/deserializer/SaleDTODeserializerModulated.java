@@ -22,7 +22,7 @@ public class SaleDTODeserializerModulated extends BaseTypeSafeDeserializer<SaleD
         dto.setDate(validateLocalDate(node, "date", errors));
         dto.setStatus(validateString(node, "status", errors));
         dto.setIdOffice(validateLong(node, "idOffice", errors));
-        dto.setTotal(validateDouble(node, "total", errors));
+//        dto.setTotal(validateDouble(node, "total", errors));
         
         // Validating the list of SaleDetails
         dto.setDetails(validateList(node, "details", SalesDetailDTO.class, errors, ctxt));

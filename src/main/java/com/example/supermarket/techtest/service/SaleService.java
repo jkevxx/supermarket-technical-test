@@ -62,12 +62,13 @@ public class SaleService implements ISaleService {
         sale.setDate(saleDTO.getDate());
         sale.setStatus(saleDTO.getStatus());
         sale.setOffice(office);
-        sale.setTotal(sale.getTotal());
+//        sale.setTotal(saleDTO.getTotal());
 
 
         // Details list
         // here are the products
         List<SalesDetail> salesDetailList = new ArrayList<>();
+        Double total = 0.0;
 
         for (SalesDetailDTO salesDetailDTO : saleDTO.getDetails()) {
             Product product = productRepository.findByName(salesDetailDTO.getProductName()).orElse(null);
@@ -80,9 +81,13 @@ public class SaleService implements ISaleService {
             salesDetail.setPrice(salesDetailDTO.getPrice());
 
             salesDetailList.add(salesDetail);
+
+            // Accumulate total
+            total += (salesDetail.getPrice() * salesDetail.getAmountProd());
         }
 
         sale.setDetail(salesDetailList);
+        sale.setTotal(total);
 
         return Mapper.toDTO(saleRepository.save(sale));
     }
@@ -94,7 +99,7 @@ public class SaleService implements ISaleService {
 
         sale.setDate(saleDTO.getDate());
         sale.setStatus(saleDTO.getStatus());
-        sale.setTotal(sale.getTotal());
+        sale.setTotal(saleDTO.getTotal());
 
         Office office = officeRepository.findById(saleDTO.getIdOffice()).orElse(null);
         if (office == null) throw new NotFoundException("Office not found");
