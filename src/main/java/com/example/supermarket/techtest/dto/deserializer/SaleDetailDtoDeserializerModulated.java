@@ -17,6 +17,8 @@ public class SaleDetailDtoDeserializerModulated extends BaseTypeSafeDeserializer
 
     @Override
     protected void deserializeFields(JsonNode node, SalesDetailDTO dto, Map<String, String> errors, DeserializationContext ctxt) {
+        
+        //dto.setId(validateLong(node, "id", errors));
         dto.setProductName(validateString(node, "productName", errors));
         dto.setAmountProd(validateInteger(node, "amountProd", errors));
         dto.setPrice(validateDouble(node, "price", errors));

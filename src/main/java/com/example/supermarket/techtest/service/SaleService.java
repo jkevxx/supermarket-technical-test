@@ -97,14 +97,38 @@ public class SaleService implements ISaleService {
         Sale sale = saleRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("sale not found"));
 
-        sale.setDate(saleDTO.getDate());
-        sale.setStatus(saleDTO.getStatus());
-        sale.setTotal(saleDTO.getTotal());
-
         Office office = officeRepository.findById(saleDTO.getIdOffice()).orElse(null);
         if (office == null) throw new NotFoundException("Office not found");
 
+        sale.setDate(saleDTO.getDate());
+        sale.setStatus(saleDTO.getStatus());
+//        sale.setTotal(saleDTO.getTotal());
+
         sale.setOffice(office);
+
+        // Details list
+        List<SalesDetail> salesDetailList = new ArrayList<>();
+        Double total = 0.0;
+
+        for (SalesDetailDTO salesDetailDTO : saleDTO.getDetails()) {
+            Product product = productRepository.findByName(salesDetailDTO.getProductName()).orElse(null);
+            if (product == null) throw new RuntimeException("product not found " + salesDetailDTO.getProductName());
+
+            SalesDetail salesDetail = new SalesDetail();
+            salesDetail.setSale(sale);
+            salesDetail.setProduct(product);
+            salesDetail.setAmountProd(salesDetailDTO.getAmountProd());
+            salesDetail.setPrice(salesDetailDTO.getPrice());
+
+            salesDetailList.add(salesDetail);
+
+            // Accumulate total
+            total += (salesDetail.getPrice() * salesDetail.getAmountProd());
+        }
+
+        sale.getDetail().clear();
+        sale.getDetail().addAll(salesDetailList);
+        sale.setTotal(total);
 
         return Mapper.toDTO(saleRepository.save(sale));
     }

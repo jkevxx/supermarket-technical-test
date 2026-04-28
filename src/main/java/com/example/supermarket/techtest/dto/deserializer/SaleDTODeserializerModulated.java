@@ -19,6 +19,7 @@ public class SaleDTODeserializerModulated extends BaseTypeSafeDeserializer<SaleD
     @Override
     protected void deserializeFields(JsonNode node, SaleDTO dto, Map<String, String> errors, DeserializationContext ctxt) {
 
+        //dto.setId(validateLong(node, "id", errors));
         dto.setDate(validateLocalDate(node, "date", errors));
         dto.setStatus(validateString(node, "status", errors));
         dto.setIdOffice(validateLong(node, "idOffice", errors));
