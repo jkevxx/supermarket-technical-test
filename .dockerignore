@@ -1,0 +1,29 @@
+# Build artifacts
+target/
+build/
+*.jar
+
+# IDE settings
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Git
+.git/
+.gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Documentation and others
+README.md
+docs/
+mvnw.cmd
+HELP.md

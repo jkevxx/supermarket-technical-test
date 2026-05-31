@@ -50,3 +50,22 @@
   ]
 }
 ```
+
+---
+
+
+## Docker
+
+### Dockerfile
+```bash
+docker build -t "supermarket-api-image" .
+
+docker run -d --name my-api -p 8080:8080 supermarket-api-image
+
+```
+
+### Dockerfile
+```bash
+docker-compouse up
+```
+
