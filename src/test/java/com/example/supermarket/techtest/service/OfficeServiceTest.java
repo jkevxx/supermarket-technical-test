@@ -1,6 +1,7 @@
 package com.example.supermarket.techtest.service;
 
 import com.example.supermarket.techtest.dto.OfficeDTO;
+import com.example.supermarket.techtest.exception.NotFoundException;
 import com.example.supermarket.techtest.model.Office;
 import com.example.supermarket.techtest.repository.OfficeRepository;
 import com.example.supermarket.techtest.service.OfficeService;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -41,5 +43,40 @@ class OfficeServiceTest {
         assertEquals(2, result.size());
         assertEquals("Office 1", result.get(0).getName());
         assertEquals("Office 2", result.get(1).getName());
+    }
+
+    @Test
+    @DisplayName("Test getOffice - Success")
+    void testGetOffice_Success() {
+        // Arrange
+        Long officeId = 1L;
+        Office office = Office.builder()
+                .id(officeId)
+                .name("Office 1")
+                .direction("Street 1")
+                .build();
+        when(officeRepository.findById(officeId)).thenReturn(Optional.of(office));
+
+        // Act
+        OfficeDTO result = officeService.getOffice(officeId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(officeId, result.getId());
+        assertEquals("Office 1", result.getName());
+        assertEquals("Street 1", result.getDirection());
+    }
+
+    @Test
+    @DisplayName("Test getOffice - Not Found")
+    void testGetOffice_NotFound() {
+        // Arrange
+        Long officeId = 1L;
+        when(officeRepository.findById(officeId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> {
+            officeService.getOffice(officeId);
+        });
     }
 }

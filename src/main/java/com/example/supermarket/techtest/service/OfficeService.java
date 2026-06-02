@@ -25,7 +25,7 @@ public class OfficeService implements IOfficeService{
     public OfficeDTO getOffice(Long id) {
 
         Office officeFound = officeRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("office found"));
+                .orElseThrow(()-> new NotFoundException("office not found"));
 
         return Mapper.toDTO(officeFound);
     }
